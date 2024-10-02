@@ -8,6 +8,7 @@ export default function OfficePakuriko() {
   const [favSnack, setFavSnack] = useState("");
   const [penName, setPenName] = useState(""); // ペンネーム用の状態を追加
   const [showMessage, setShowMessage] = useState(false); // メッセージ表示用の状態を追加
+  const [liked, setLiked] = useState(false); // いいね！ボタンが押されたかどうかを管理
 
   const handleLike = async () => {
     try {
@@ -19,6 +20,12 @@ export default function OfficePakuriko() {
         body: JSON.stringify({ type: "like" }),
       });
       if (!response.ok) throw new Error("Failed to send like notification");
+
+      // いいねが押されたら状態をtrueにしてメッセージを表示
+      setLiked(true);
+      setTimeout(() => {
+        setLiked(false); // 3秒後にリセット
+      }, 3000);
     } catch (error) {
       console.error("Error sending like notification:", error);
     }
@@ -54,11 +61,15 @@ export default function OfficePakuriko() {
     <div className="max-w-md w-full mx-auto p-6 bg-white rounded-lg shadow-md text-purple-500">
       <h1 className="text-2xl font-bold mb-6 text-center">OfficePakuriko</h1>
 
+      {/* いいね！ボタンの状態に応じて色とテキストを変更 */}
       <button
         onClick={handleLike}
-        className="w-full mb-4 flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        className={`w-full mb-4 flex items-center justify-center ${
+          liked ? "bg-green-500" : "bg-blue-500"
+        } text-white py-2 px-4 rounded hover:bg-blue-600`}
       >
-        <ThumbsUp className="mr-2 h-4 w-4" /> いいね！
+        <ThumbsUp className="mr-2 h-4 w-4" />
+        {liked ? "いいね！ありがとうございます" : "いいね！"}
       </button>
 
       {/* ペンネーム入力欄を追加 */}
